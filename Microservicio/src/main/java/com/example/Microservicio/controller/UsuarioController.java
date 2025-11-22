@@ -14,28 +14,25 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+    // Constructor
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
+    // ✅ GET para probar que el controller responde
     @GetMapping
-    public List<Usuario> obtenerTodos() {
+    public List<Usuario> listar() {
         return usuarioService.findAll();
     }
 
-    @PostMapping("/registrar")
+    // ✅ ESTE ES EL ENDPOINT DE REGISTRO
+    @PostMapping("/registrar")   // 👈 IMPORTANTE: /registrar
     public ResponseEntity<Usuario> registrar(@RequestBody Usuario usuario) {
         try {
-            return ResponseEntity.ok(usuarioService.registrar(usuario));
+            Usuario creado = usuarioService.registrar(usuario);
+            return ResponseEntity.ok(creado);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().build();
         }
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Usuario> obtener(@PathVariable Long id) {
-        Usuario u = usuarioService.findById(id);
-        if (u == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(u);
     }
 }

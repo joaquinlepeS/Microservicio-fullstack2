@@ -17,29 +17,34 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
+    // 🔹 Registrar usuario
     public Usuario registrar(Usuario usuario) {
 
-    if (usuarioRepository.findByEmail(usuario.getEmail()) != null) {
-        throw new IllegalArgumentException("Email duplicado");
+        // ✔ Validación email único
+        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+
+        // ✔ Rol por defecto
+        if (usuario.getRol() == null) {
+            usuario.setRol(Rol.CLIENTE);
+        }
+
+        return usuarioRepository.save(usuario);
     }
 
-    if (usuario.getRol() == null) {
-        usuario.setRol(Rol.CLIENTE);
-    }
-
-    return usuarioRepository.save(usuario);
-}
-
-    
+    // 🔹 Listar todos
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
 
+    // 🔹 Buscar por ID
     public Usuario findById(Long id) {
         return usuarioRepository.findById(id).orElse(null);
     }
-    public Optional<Usuario> buscarPorEmail(String email) {
-    return usuarioRepository.findByEmail(email);
-}
 
+    // 🔹 Buscar por email
+    public Optional<Usuario> buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
 }
