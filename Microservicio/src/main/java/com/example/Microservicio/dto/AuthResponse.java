@@ -1,14 +1,14 @@
 package com.example.Microservicio.dto;
 
-import com.example.Microservicio.model.Rol;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LoginResponse {
-    private String token;
-    private String email;
+public class AuthResponse {
+
+    private Long id;
     private String nombre;
-    private Rol rol;
+    private String email;
+    private String rol;
 }

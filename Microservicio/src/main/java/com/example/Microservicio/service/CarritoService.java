@@ -49,24 +49,27 @@ public class CarritoService {
 
     public Carrito agregarProducto(Long usuarioId, Long productoId, Integer cantidad) {
 
-        Carrito carrito = obtenerCarrito(usuarioId);
-        Product producto = productoRepository.findById(productoId).orElse(null);
+    Carrito carrito = obtenerCarrito(usuarioId);
 
-        CarritoItem item = new CarritoItem();
-        item.setCarrito(carrito);
-        item.setProducto(producto);
-        item.setCantidad(cantidad);
+    Product producto = productoRepository.findById(productoId)
+            .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
 
-        Double subtotal = (double) producto.getPrecio() * cantidad;
-        item.setSubtotal(subtotal);
+    CarritoItem item = new CarritoItem();
+    item.setCarrito(carrito);
+    item.setProducto(producto);
+    item.setCantidad(cantidad);
 
-        itemRepository.save(item);
+    double subtotal = producto.getPrecio() * cantidad;
+    item.setSubtotal(subtotal);
 
-        carrito.setTotal(carrito.getTotal() + subtotal);
-        carritoRepository.save(carrito);
+    itemRepository.save(item);
 
-        return carrito;
-    }
+    carrito.setTotal(carrito.getTotal() + subtotal);
+    carritoRepository.save(carrito);
+
+    return carrito;
+}
+
 
     public Carrito vaciarCarrito(Long usuarioId) {
         Carrito carrito = obtenerCarrito(usuarioId);

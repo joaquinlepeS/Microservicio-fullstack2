@@ -1,10 +1,12 @@
 package com.example.Microservicio.service;
 
+import com.example.Microservicio.model.Rol;
 import com.example.Microservicio.model.Usuario;
 import com.example.Microservicio.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -17,17 +19,18 @@ public class UsuarioService {
 
     public Usuario registrar(Usuario usuario) {
 
-        if (usuarioRepository.findByEmail(usuario.getEmail()) != null) {
-            throw new IllegalArgumentException("El email ya está registrado");
-        }
-
-        if (usuario.getPassword().length() < 4) {
-            throw new IllegalArgumentException("La contraseña debe tener al menos 4 caracteres");
-        }
-
-        return usuarioRepository.save(usuario);
+    if (usuarioRepository.findByEmail(usuario.getEmail()) != null) {
+        throw new IllegalArgumentException("Email duplicado");
     }
 
+    if (usuario.getRol() == null) {
+        usuario.setRol(Rol.CLIENTE);
+    }
+
+    return usuarioRepository.save(usuario);
+}
+
+    
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
@@ -35,8 +38,8 @@ public class UsuarioService {
     public Usuario findById(Long id) {
         return usuarioRepository.findById(id).orElse(null);
     }
+    public Optional<Usuario> buscarPorEmail(String email) {
+    return usuarioRepository.findByEmail(email);
+}
 
-    public Usuario obtenerPorEmail(String email) {
-        return usuarioRepository.findByEmail(email);
-    }
 }

@@ -1,5 +1,6 @@
 package com.example.Microservicio.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ public class CarritoItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore     // 👈 evitamos bucle carrito → items → carrito
     @ManyToOne
     @JoinColumn(name = "carrito_id")
     private Carrito carrito;

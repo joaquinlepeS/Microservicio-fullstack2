@@ -1,5 +1,35 @@
 package com.example.Microservicio.controller;
 
+import com.example.Microservicio.model.Usuario;
+import com.example.Microservicio.service.UsuarioService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/cliente")
+@CrossOrigin(origins = "*")
 public class ClienteController {
-    
+
+    private final UsuarioService usuarioService;
+
+    public ClienteController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
+    // 🔐 Devuelve perfil del usuario logueado (extraído del JWT)
+    @GetMapping("/perfil")
+    public ResponseEntity<Usuario> obtenerPerfil(Authentication auth) {
+
+        String email = auth.getName(); // email desde el token
+        Object principal = auth.getPrincipal();
+        Usuario usuario = null;
+        if (principal instanceof Usuario) {
+            usuario = (Usuario) principal;
+        }
+
+        if (usuario == null) return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(usuario);
+    }
 }

@@ -1,0 +1,49 @@
+package com.example.Microservicio.controller;
+
+import com.example.Microservicio.dto.AuthRequest;
+import com.example.Microservicio.dto.AuthResponse;
+import com.example.Microservicio.model.Usuario;
+import com.example.Microservicio.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/auth")
+@CrossOrigin(origins = "*")
+public class AuthController {
+
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+
+        Usuario usuario = usuarioService.obtenerPorEmail(request.getEmail());
+
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Usuario no encontrado");
+        }
+
+        // 🔥 Verificar contraseña encriptada
+        if (!passwordEncoder.matches(request.getPassword(), usuario.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Contraseña incorrecta");
+        }
+
+        AuthResponse response = new AuthResponse(
+                usuario.getId(),
+                usuario.getNombre(),
+                usuario.getEmail(),
+                usuario.getRol().name()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+}
