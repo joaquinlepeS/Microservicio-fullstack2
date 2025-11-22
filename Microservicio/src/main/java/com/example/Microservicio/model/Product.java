@@ -13,11 +13,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private Integer precio;
     private String nombre;
     private String descripcion;
+
+    // 🔥 Campos que espera tu frontend
+    private String categoria;
+    private String imagen;
+    private String detalle;
 }

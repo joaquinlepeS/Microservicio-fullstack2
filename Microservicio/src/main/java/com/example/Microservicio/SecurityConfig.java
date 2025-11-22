@@ -12,6 +12,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.http.HttpMethod;
 
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
@@ -33,7 +34,7 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
 
     public SecurityConfig(JwtAuthenticationFilter jwtFilter,
-                          CustomUserDetailsService userDetailsService) {
+            CustomUserDetailsService userDetailsService) {
         this.jwtFilter = jwtFilter;
         this.userDetailsService = userDetailsService;
     }
@@ -74,8 +75,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/carrito/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/cliente/**").hasRole("CLIENTE")
-                        .anyRequest().authenticated()
-                )
+                        .requestMatchers(HttpMethod.POST, "/api/v1/productos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/productos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/productos/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
 
                 .headers(headers -> headers.frameOptions().disable())
 

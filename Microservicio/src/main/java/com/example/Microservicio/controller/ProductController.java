@@ -18,17 +18,48 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // 🔓 PUBLICO: Todos pueden ver productos (sin JWT)
+    // 🔵 PUBLICO: obtener todos
     @GetMapping
     public List<Product> obtenerTodos() {
         return productService.findAll();
     }
 
-    // 🔓 PUBLICO: Ver detalles de un producto
+    // 🔵 PUBLICO: obtener por ID
     @GetMapping("/{id}")
     public ResponseEntity<Product> obtenerPorId(@PathVariable Long id) {
         Product p = productService.findById(id);
         if (p == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(p);
+    }
+
+    // 🔴 SOLO ADMIN: crear producto
+    @PostMapping
+    public ResponseEntity<?> crear(@RequestBody Product product) {
+        try {
+            Product creado = productService.save(product);
+            return ResponseEntity.ok(creado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // 🔴 SOLO ADMIN: actualizar producto
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Product product) {
+        Product actualizado = productService.update(id, product);
+        if (actualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(actualizado);
+    }
+
+    // 🔴 SOLO ADMIN: eliminar producto
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
+        boolean eliminado = productService.delete(id);
+        if (!eliminado) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 }
