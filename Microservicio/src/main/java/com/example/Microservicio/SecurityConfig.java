@@ -66,23 +66,30 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
-
                 .authorizeHttpRequests(auth -> auth
+
+                        // H2
                         .requestMatchers("/h2-console/**").permitAll()
+
+                        // AUTH
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/usuarios/registrar").permitAll()
-                        .requestMatchers("/api/v1/productos/**").permitAll()
-                        .requestMatchers("/api/v1/carrito/**").permitAll()
+
+                        // PRODUCTOS
+                        .requestMatchers(HttpMethod.GET, "/api/v1/productos/**").permitAll()
+                        .requestMatchers("/api/v1/productos/**").hasRole("ADMIN")
+
+                        // ADMIN
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+
+                        // CLIENTE
                         .requestMatchers("/api/v1/cliente/**").hasRole("CLIENTE")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/productos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/productos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/productos/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+
+                        // TODO LO DEMÁS PERMITIDO
+                        .anyRequest().permitAll())
 
                 .headers(headers -> headers.frameOptions().disable())
 
-                // CORS
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of("*"));
@@ -91,12 +98,13 @@ public class SecurityConfig {
                     return config;
                 }))
 
-                // 🔥 Insertar filtro JWT antes del filtro estándar
+                // JWT
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // Registrar el AuthenticationProvider
+                // provider
                 .authenticationProvider(authenticationProvider());
 
         return http.build();
     }
+
 }

@@ -1,0 +1,4 @@
+2025-11-22 00:48:20.938264-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "INSERT INTO USUARIO (email, nombre, password, rol) VALUES ( 'admin@admin.com', 'Administrador', '$2a$10$8c0EXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEf4j8', -- pega tu hash aquí 'ADMIN' );[*]"; se esperaba "DEFAULT, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"
+Syntax error in SQL statement "INSERT INTO USUARIO (email, nombre, password, rol) VALUES ( 'admin@admin.com', 'Administrador', '$2a$10$8c0EXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEf4j8', -- pega tu hash aquí 'ADMIN' );[*]"; expected "DEFAULT, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+INSERT INTO USUARIO (email, nombre, password, rol) VALUES ( 'admin@admin.com', 'Administrador', '$2a$10$8c0EXAMPLEEXAMPLEEXAMPLEEXAMPLEEXAMPLEf4j8', -- pega tu hash aquí 'ADMIN' ); [42001-224]
