@@ -26,12 +26,13 @@ public class ProductController {
 
     // 🔵 PUBLICO: obtener por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Product> obtenerPorId(@PathVariable Long id) {
-        Product p = productService.findById(id);
-        if (p == null)
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(p);
-    }
+public ResponseEntity<Product> obtenerPorId(@PathVariable("id") Long id) {
+    Product p = productService.findById(id);
+    if (p == null)
+        return ResponseEntity.notFound().build();
+    return ResponseEntity.ok(p);
+}
+
 
     // 🔴 SOLO ADMIN: crear producto
     @PostMapping
