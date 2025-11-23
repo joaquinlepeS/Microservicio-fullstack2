@@ -39,13 +39,11 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    // 🔹 Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 🔹 Provider responsable de autenticar usuarios
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -54,39 +52,32 @@ public class SecurityConfig {
         return provider;
     }
 
-    // 🔹 Authentication manager
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // 🔹 Security Filter Chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
 
-                        // H2
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll()
 
-                        // AUTH
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/usuarios/registrar").permitAll()
 
-                        // PRODUCTOS
                         .requestMatchers(HttpMethod.GET, "/api/v1/productos/**").permitAll()
-                        .requestMatchers("/api/v1/productos/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/productos/**").hasAuthority("ROLE_ADMIN")
 
-                        // ADMIN
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
 
-                        // CLIENTE
-                        .requestMatchers("/api/v1/cliente/**").hasRole("CLIENTE")
+                        .requestMatchers("/api/v1/cliente/**").hasAuthority("ROLE_CLIENTE")
 
-                        // TODO LO DEMÁS PERMITIDO
-                        .anyRequest().permitAll())
+                        .anyRequest().permitAll()
+                )
 
                 .headers(headers -> headers.frameOptions().disable())
 
@@ -98,13 +89,10 @@ public class SecurityConfig {
                     return config;
                 }))
 
-                // JWT
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // provider
                 .authenticationProvider(authenticationProvider());
 
         return http.build();
     }
-
 }
