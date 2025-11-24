@@ -33,6 +33,12 @@ public ResponseEntity<Product> obtenerPorId(@PathVariable("id") Long id) {
     return ResponseEntity.ok(p);
 }
 
+// 🔥 NUEVO — obtener productos por categoría
+    @GetMapping("/categoria/{categoria}")
+        public List<Product> obtenerPorCategoria(@PathVariable("categoria") String categoria) {
+            return productService.findByCategoria(categoria);
+        }
+
 
     // 🔴 SOLO ADMIN: crear producto
     @PostMapping

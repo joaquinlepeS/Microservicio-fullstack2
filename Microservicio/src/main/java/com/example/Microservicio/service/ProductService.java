@@ -23,8 +23,11 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
-    public Product save(Product product) {
+    public List<Product> findByCategoria(String categoria) {
+        return productRepository.findByCategoriaIgnoreCase(categoria);
+    }
 
+    public Product save(Product product) {
         if (product.getNombre() == null || product.getNombre().isEmpty()) {
             throw new IllegalArgumentException("El nombre del producto no puede estar vacío");
         }
@@ -47,31 +50,18 @@ public class ProductService {
     public Product update(Long id, Product product) {
         Product existente = productRepository.findById(id).orElse(null);
 
-        if (existente == null) {
-            return null;
-        }
+        if (existente == null) return null;
 
-        if (product.getNombre() != null && !product.getNombre().isEmpty()) {
-            existente.setNombre(product.getNombre());
-        }
-
-        if (product.getDescripcion() != null && !product.getDescripcion().isEmpty()) {
-            existente.setDescripcion(product.getDescripcion());
-        }
-
-        if (product.getPrecio() != null && product.getPrecio() >= 0) {
-            existente.setPrecio(product.getPrecio());
-        }
+        if (product.getNombre() != null) existente.setNombre(product.getNombre());
+        if (product.getDescripcion() != null) existente.setDescripcion(product.getDescripcion());
+        if (product.getPrecio() != null && product.getPrecio() >= 0) existente.setPrecio(product.getPrecio());
 
         return productRepository.save(existente);
     }
 
     public boolean delete(Long id) {
         Product existente = productRepository.findById(id).orElse(null);
-
-        if (existente == null) {
-            return false;
-        }
+        if (existente == null) return false;
 
         productRepository.deleteById(id);
         return true;
